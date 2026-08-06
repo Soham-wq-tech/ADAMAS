@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import Background from "./components/Background";
@@ -12,9 +13,18 @@ import Timer from "./components/Timer";
 import Notes from "./components/Notes";
 import LiveFeedback from "./components/LiveFeedback";
 import VoiceControls from "./components/VoiceControls";
+import WebcamPanel from "./components/WebcamPanel";
+import useSpeechRecognition from "@/hooks/useSpeechRecognition";
 
 export default function InterviewRoomPage() {
   const searchParams = useSearchParams();
+  const [cameraOn, setCameraOn] = useState(true);
+  const {
+  transcript,
+  isListening,
+  startListening,
+  stopListening,
+} = useSpeechRecognition();
 
   const company = searchParams.get("company") ?? "Google";
   const type = searchParams.get("type") ?? "Technical";
@@ -54,24 +64,38 @@ export default function InterviewRoomPage() {
           <div className="col-span-6 flex flex-col gap-6">
             <QuestionCard />
 
-            <Transcript />
+            <Transcript
+  transcript={transcript}
+  isListening={isListening}
+/>
           </div>
 
           {/* Right Panel */}
-          <div className="col-span-3 flex flex-col gap-6">
-            <Timer />
+<div className="col-span-3 flex flex-col gap-6">
 
-            <Notes />
+  <WebcamPanel cameraOn={cameraOn} />
 
-            <LiveFeedback />
-          </div>
+  <VoiceControls
+  cameraOn={cameraOn}
+  setCameraOn={setCameraOn}
+  isListening={isListening}
+  startListening={startListening}
+  stopListening={stopListening}
+/>
 
-        </div>
+  <Timer />
+
+  <Notes />
+
+  <LiveFeedback />
+
+</div>
+</div> {/* <-- Close Main Grid here */}
 
         {/* Bottom Controls */}
         <div className="mt-8 flex flex-col items-center gap-6">
 
-          <VoiceControls />
+        
 
           <button
             className="rounded-2xl border border-red-500/30
