@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Image from "next/image";
 
 export default function Home() {
@@ -63,3 +64,10 @@ export default function Home() {
     </div>
   );
 }
+=======
+import Hero from "@/components/landing/Hero";
+
+export default function Home() {
+  return <Hero />;
+}
+>>>>>>> origin/souvik
