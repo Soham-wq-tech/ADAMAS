@@ -47,10 +47,16 @@ export default function LoginPage() {
         localStorage.removeItem("isGuest");
         router.push("/dashboard");
       } else {
-        setError("Invalid email or password.");
+        setError("Account not found or invalid credentials. Please sign up to create an account.");
       }
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred. Please try again.");
+      const message = err.message?.toLowerCase() || "";
+      // Check if error implies user doesn't exist or is unauthorized/not found
+      if (message.includes("not found") || message.includes("exist") || message.includes("invalid")) {
+        setError("No account found with these credentials. Please sign up to create an account.");
+      } else {
+        setError(err.message || "An unexpected error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +112,12 @@ export default function LoginPage() {
 
         {error && (
           <div className="mb-4 rounded border border-red-500/50 bg-red-500/10 p-3 text-center text-xs text-red-400">
-            {error}
+            {error}{" "}
+            {error.includes("sign up") && (
+              <Link href="/signup" className="font-semibold underline hover:text-red-300">
+                Sign up here
+              </Link>
+            )}
           </div>
         )}
 

@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Brain } from "lucide-react";
 
-
 const companies = [
   {
     name: "Google",
@@ -11,43 +10,43 @@ const companies = [
       "AI interview simulation inspired by Google's problem-solving focused engineering interviews.",
     topics: ["DSA", "Algorithms", "System Design"],
   },
-
   {
     name: "Microsoft",
     description:
       "Practice Microsoft's technical interview style with coding and engineering fundamentals.",
     topics: ["DSA", "OOP", "Problem Solving"],
   },
-
   {
     name: "Meta",
     description:
       "Experience fast-paced interviews focused on optimized coding solutions.",
     topics: ["DSA", "Optimization", "System Design"],
   },
-
   {
     name: "Amazon",
     description:
       "Prepare with technical rounds inspired by Amazon's hiring process.",
     topics: ["DSA", "Leadership", "System Design"],
   },
-
   {
-    name: "TCS",
+    name: "NVIDIA",
     description:
-      "Practice common patterns asked in service-based company interviews.",
-    topics: ["Programming", "CS Fundamentals", "HR"],
+      "Experience specialized interviews focused on high-performance computing and optimized coding.",
+    topics: ["DSA", "Optimization", "System Design"],
   },
-
   {
-    name: "IBM",
+    name: "Apple",
     description:
-      "Explore interviews focused on software engineering and modern technologies.",
-    topics: ["Programming", "Cloud", "Databases"],
+      "Tackle rigorous engineering interview questions centered around deep product and system architecture.",
+    topics: ["Coding", "Architecture", "Problem Solving"],
+  },
+  {
+    name: "Atlassian",
+    description:
+      "Practice collaboration-driven engineering problem-solving and software design patterns.",
+    topics: ["DSA", "System Design", "Collaboration"],
   },
 ];
-
 
 const otherCompanies = [
   "Adobe",
@@ -58,11 +57,8 @@ const otherCompanies = [
   "Samsung",
 ];
 
-
 export default function Companies() {
-
   return (
-
     <section
       id="companies"
       className="
@@ -73,23 +69,17 @@ export default function Companies() {
       py-28
       "
     >
-
-
       {/* Background Glow */}
-
       <motion.div
-
         animate={{
-          x:[0,30,0],
-          y:[0,-20,0]
+          x: [0, 30, 0],
+          y: [0, -20, 0],
         }}
-
         transition={{
-          duration:8,
-          repeat:Infinity,
-          ease:"easeInOut"
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut",
         }}
-
         className="
         absolute
         left-1/2
@@ -101,10 +91,7 @@ export default function Companies() {
         bg-cyan-500/10
         blur-[120px]
         "
-
       />
-
-
 
       <div className="
       relative
@@ -112,39 +99,26 @@ export default function Companies() {
       mx-auto
       max-w-6xl
       ">
-
-
-
         {/* Heading */}
-
-
         <motion.div
-
           initial={{
-            opacity:0,
-            y:40
+            opacity: 0,
+            y: 40,
           }}
-
           whileInView={{
-            opacity:1,
-            y:0
+            opacity: 1,
+            y: 0,
           }}
-
           transition={{
-            duration:0.8
+            duration: 0.8,
           }}
-
           viewport={{
-            once:true
+            once: true,
           }}
-
           className="
           text-center
           "
-
         >
-
-
           <p className="
           text-sm
           tracking-[0.3em]
@@ -153,8 +127,6 @@ export default function Companies() {
             COMPANIES
           </p>
 
-
-
           <h2 className="
           mt-4
           text-4xl
@@ -162,12 +134,8 @@ export default function Companies() {
           text-white
           md:text-5xl
           ">
-
             Train For Real Company Interviews
-
           </h2>
-
-
 
           <p className="
           mx-auto
@@ -175,46 +143,27 @@ export default function Companies() {
           max-w-2xl
           text-slate-400
           ">
-
             Our AI interviewer adapts to different company interview
             patterns, difficulty levels and evaluation styles.
-
           </p>
-
-
         </motion.div>
 
-
-
-
-
         {/* Company Cards */}
-
-
         <motion.div
-
-
           initial="hidden"
-
           whileInView="visible"
-
           viewport={{
-            once:true,
-            amount:0.2
+            once: true,
+            amount: 0.2,
           }}
-
-
           variants={{
-            hidden:{},
-
-            visible:{
-              transition:{
-                staggerChildren:0.15
-              }
-            }
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.15,
+              },
+            },
           }}
-
-
           className="
           mt-16
           grid
@@ -222,38 +171,24 @@ export default function Companies() {
           md:grid-cols-2
           lg:grid-cols-3
           "
-
         >
-
-
-
-          {companies.map((company)=>(
-
-
+          {companies.map((company) => (
             <motion.div
-
-
               key={company.name}
-
-
               variants={{
-                hidden:{
-                  opacity:0,
-                  y:50
+                hidden: {
+                  opacity: 0,
+                  y: 50,
                 },
-
-                visible:{
-                  opacity:1,
-                  y:0,
-
-                  transition:{
-                    duration:0.7,
-                    ease:[0.22,1,0.36,1]
-                  }
-                }
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    duration: 0.7,
+                    ease: [0.22, 1, 0.36, 1],
+                  },
+                },
               }}
-
-
               className="
               rounded-2xl
               border
@@ -262,12 +197,7 @@ export default function Companies() {
               p-6
               backdrop-blur-xl
               "
-
-
             >
-
-
-
               <div className="
               flex
               h-12
@@ -277,16 +207,11 @@ export default function Companies() {
               rounded-xl
               bg-cyan-400/10
               ">
-
                 <Brain
                   size={24}
                   className="text-cyan-400"
                 />
-
               </div>
-
-
-
 
               <h3 className="
               mt-6
@@ -294,13 +219,8 @@ export default function Companies() {
               font-semibold
               text-white
               ">
-
                 {company.name}
-
               </h3>
-
-
-
 
               <p className="
               mt-3
@@ -308,13 +228,8 @@ export default function Companies() {
               leading-relaxed
               text-slate-400
               ">
-
                 {company.description}
-
               </p>
-
-
-
 
               <div className="
               mt-5
@@ -322,14 +237,9 @@ export default function Companies() {
               flex-wrap
               gap-2
               ">
-
-
-                {company.topics.map((topic)=>(
-
+                {company.topics.map((topic) => (
                   <span
-
                     key={topic}
-
                     className="
                     rounded-full
                     border
@@ -340,64 +250,31 @@ export default function Companies() {
                     text-xs
                     text-slate-300
                     "
-
                   >
-
                     {topic}
-
                   </span>
-
                 ))}
-
-
               </div>
-
-
-
             </motion.div>
-
-
           ))}
-
-
         </motion.div>
 
-
-
-
-
-
-
         {/* Other Companies */}
-
-
-
         <motion.div
-
-
           initial={{
-            opacity:0,
-            y:40
+            opacity: 0,
+            y: 40,
           }}
-
-
           whileInView={{
-            opacity:1,
-            y:0
+            opacity: 1,
+            y: 0,
           }}
-
-
           transition={{
-            duration:0.8
+            duration: 0.8,
           }}
-
-
           viewport={{
-            once:true
+            once: true,
           }}
-
-
-
           className="
           mt-10
           rounded-2xl
@@ -407,36 +284,21 @@ export default function Companies() {
           p-8
           text-center
           "
-
-
         >
-
-
-
           <h3 className="
           text-xl
           font-semibold
           text-white
           ">
-
             And Many More
-
           </h3>
-
-
-
 
           <p className="
           mt-3
           text-slate-400
           ">
-
             More company-specific interview rooms will be added soon.
-
           </p>
-
-
-
 
           <div className="
           mt-5
@@ -445,14 +307,9 @@ export default function Companies() {
           justify-center
           gap-3
           ">
-
-
-            {otherCompanies.map((company)=>(
-
+            {otherCompanies.map((company) => (
               <span
-
                 key={company}
-
                 className="
                 rounded-full
                 bg-white/5
@@ -461,29 +318,13 @@ export default function Companies() {
                 text-sm
                 text-slate-400
                 "
-
               >
-
                 {company}
-
               </span>
-
             ))}
-
-
           </div>
-
-
-
         </motion.div>
-
-
-
-
       </div>
-
-
     </section>
-
   );
 }

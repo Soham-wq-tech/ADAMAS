@@ -1,0 +1,51 @@
+// app/icon.tsx
+import { ImageResponse } from "next/og";
+
+// Route segment config
+export const runtime = "edge";
+
+// Image metadata
+export const size = {
+  width: 32,
+  height: 32,
+};
+export const contentType = "image/png";
+
+// Image generation
+export default function Icon() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          fontSize: 24,
+          background: "black",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "8px",
+          border: "1px solid rgba(6, 182, 212, 0.4)",
+        }}
+      >
+        {/* Simple SVG representation of the room portal icon for the browser tab */}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#22d3ee"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      </div>
+    ),
+    {
+      ...size,
+    }
+  );
+}

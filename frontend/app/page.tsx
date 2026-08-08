@@ -1,12 +1,12 @@
 // app/page.tsx
 // Next.js (App Router) + Tailwind landing page
-// Drop this in as your root page. Swap PRODUCT_NAME and copy for your team's project.
 import HowItWorks from "./components/landing/HowItWorks";
 import Link from "next/link";
 import AIInterviewBackground from "./components/landing/AIInterviewBackground";
 import ThreeHero from "./components/landing/ThreeHero";
 import Companies from "./components/landing/Companies";
 import Footer from "./components/landing/Footer";
+
 const PRODUCT_NAME = "The Real Room";
 
 export default function Home() {
@@ -22,29 +22,25 @@ export default function Home() {
             </span>
           </div>
           <div className="hidden items-center gap-8 md:flex">
-
-  <a
-    href="#how-it-works"
-    className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
-  >
-    How It Works
-  </a>
-
-  <a
-    href="#companies"
-    className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
-  >
-    Companies
-  </a>
-
-  <a
-    href="#resources"
-    className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
-  >
-    Resources
-  </a>
-
-</div>
+            <a
+              href="#how-it-works"
+              className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+            >
+              How It Works
+            </a>
+            <a
+              href="#companies"
+              className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+            >
+              Companies
+            </a>
+            <a
+              href="#resources"
+              className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+            >
+              Resources
+            </a>
+          </div>
           <Link
             href="/login"
             className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition hover:bg-white/10"
@@ -87,80 +83,93 @@ export default function Home() {
         {/* CTAs */}
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
           <Link
-  href="/login"
-  className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40"
->
-  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-
-  <span className="relative flex items-center gap-3">
-    Enter The Room
-    <span className="text-xl transition-transform group-hover:translate-x-1">
-      →
-    </span>
-  </span>
-</Link>
-          
+            href="/login"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40"
+          >
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="relative flex items-center gap-3">
+              Enter The Room
+              <span className="text-xl transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </span>
+          </Link>
         </div>
 
         <ThreeHero />
       </section>
+
       <HowItWorks />
 
-<Companies />
+      <Companies />
 
-{/* Resources Section */}
-<section
-  id="resources"
-  className="relative z-10 mx-auto max-w-6xl px-6 py-24"
->
-  <div className="text-center">
-    <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-1 text-sm text-cyan-300">
-      Resources
-    </span>
+      {/* Resources Section */}
+      <section
+        id="resources"
+        className="relative z-10 mx-auto max-w-6xl px-6 py-24"
+      >
+        <div className="text-center">
+          <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-1 text-sm text-cyan-300">
+            Resources & Sheets
+          </span>
 
-    <h2 className="mt-6 text-4xl font-bold text-white">
-      Prepare Before You Enter
-    </h2>
+          <h2 className="mt-6 text-4xl font-bold text-white">
+            Prepare Before You Enter
+          </h2>
 
-    <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-      Curated DSA sheets, company-wise interview questions, and
-      preparation materials to help you crack your dream company.
-    </p>
-  </div>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-400">
+            Choose a company DSA sheet below to view problem sets and download materials. More company sheets will be added in future updates.
+          </p>
+        </div>
 
-  <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {/* Google Sheet Card */}
+          <Link
+            href="/resources/dsa/google"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50 hover:bg-white/10"
+          >
+            <h3 className="text-xl font-semibold text-white group-hover:text-cyan-400 transition">
+              Google DSA Sheet →
+            </h3>
+            <p className="mt-3 text-slate-400 text-sm">
+              Problem-solving focused algorithmic questions curated for Google loops.
+            </p>
+          </Link>
 
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-      <h3 className="text-xl font-semibold text-white">
-        Company DSA Sheets
-      </h3>
-      <p className="mt-3 text-slate-400">
-        Google, Amazon, Microsoft, Flipkart, TCS and more.
-      </p>
-    </div>
+          {/* Microsoft Sheet Card */}
+          <Link
+            href="/resources/dsa/microsoft"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50 hover:bg-white/10"
+          >
+            <h3 className="text-xl font-semibold text-white group-hover:text-cyan-400 transition">
+              Microsoft DSA Sheet →
+            </h3>
+            <p className="mt-3 text-slate-400 text-sm">
+              Engineering fundamentals, core patterns, and frequent interview questions.
+            </p>
+          </Link>
 
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-      <h3 className="text-xl font-semibold text-white">
-        Top Interview Questions
-      </h3>
-      <p className="mt-3 text-slate-400">
-        Frequently asked coding and HR questions.
-      </p>
-    </div>
+          {/* Amazon Sheet Card */}
+          <Link
+            href="/resources/dsa/amazon"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50 hover:bg-white/10"
+          >
+            <h3 className="text-xl font-semibold text-white group-hover:text-cyan-400 transition">
+              Amazon DSA Sheet →
+            </h3>
+            <p className="mt-3 text-slate-400 text-sm">
+              High-frequency coding rounds and problem sets tailored for Amazon SDE tracks.
+            </p>
+          </Link>
+        </div>
 
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-      <h3 className="text-xl font-semibold text-white">
-        Preparation Roadmaps
-      </h3>
-      <p className="mt-3 text-slate-400">
-        Structured guides for placements and interviews.
-      </p>
-    </div>
+        {/* Future Notice Row */}
+        <div className="mt-8 rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-6 text-center text-sm text-slate-400">
+          Note: DSA sheets for NVIDIA, Apple, Meta, Atlassian, and other companies will be added in future updates.
+        </div>
+      </section>
 
-  </div>
-</section>
-
-<Footer />
-</main>
+      <Footer />
+    </main>
   );
 }

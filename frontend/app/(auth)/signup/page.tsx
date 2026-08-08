@@ -25,6 +25,26 @@ export default function SignupPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
+
+    // Client-side Full Name Validation (at least one space required)
+    const trimmedName = formData.name.trim();
+    if (!trimmedName.includes(" ")) {
+      setError("Please enter your full name with at least one space (e.g., John Doe).");
+      return;
+    }
+
+    // Client-side Gmail Domain Check
+    if (!formData.email.toLowerCase().endsWith("@gmail.com")) {
+      setError("Please enter a valid Gmail address ending with @gmail.com.");
+      return;
+    }
+
+    // Client-side Password Validation Check (min 6 characters)
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -104,6 +124,7 @@ export default function SignupPage() {
                   placeholder="John Doe"
                 />
               </div>
+              <p className="mt-1.5 text-xs text-slate-500">Must include first and last name (at least one space)</p>
             </div>
 
             <div>
@@ -118,9 +139,10 @@ export default function SignupPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full rounded-xl border border-white/10 bg-black/40 pl-11 pr-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 transition"
-                  placeholder="you@example.com"
+                  placeholder="you@gmail.com"
                 />
               </div>
+              <p className="mt-1.5 text-xs text-slate-500">Must be a valid @gmail.com address</p>
             </div>
 
             <div>
@@ -135,7 +157,7 @@ export default function SignupPage() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full rounded-xl border border-white/10 bg-black/40 pl-11 pr-12 py-3 text-sm text-white placeholder:text-slate-600 outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 transition"
-                  placeholder="Min 8 characters"
+                  placeholder="Min 6 characters"
                 />
                 <button
                   type="button"
@@ -145,7 +167,7 @@ export default function SignupPage() {
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
-              <p className="mt-1.5 text-xs text-slate-500">Password must be at least 8 characters</p>
+              <p className="mt-1.5 text-xs text-slate-500">Password must be at least 6 characters</p>
             </div>
 
             <button
