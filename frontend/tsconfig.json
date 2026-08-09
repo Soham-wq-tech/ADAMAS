@@ -18,6 +18,10 @@
         "name": "next"
       }
     ],
+<<<<<<< HEAD
+=======
+    "ignoreDeprecations": "6.0",
+>>>>>>> origin/main
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -31,4 +35,8 @@
     "**/*.mts"
   ],
   "exclude": ["node_modules"]
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main

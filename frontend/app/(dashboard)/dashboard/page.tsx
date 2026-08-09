@@ -1,11 +1,17 @@
+<<<<<<< HEAD
 // app/dashboard/page.tsx
 // "The Real Room" — Guest Dashboard
 // Premium AI SaaS look: Linear-style structure, OpenAI-style glow, Stripe-style focus.
 // The Enter The Real Room CTA is the singular hero moment; everything else is quiet by comparison.
+=======
+// app/(dashboard)/dashboard/page.tsx
+// "The Real Room" — Dashboard with Auth Guard & Analytics
+>>>>>>> origin/main
 
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+<<<<<<< HEAD
 import Link from "next/link";
 
 // ---------------------------------------------------------------------------
@@ -31,6 +37,53 @@ export default function DashboardPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [spotlight, setSpotlight] = useState({ x: 50, y: 50 });
 
+=======
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { apiFetch } from "@/lib/api";
+
+// Static Content
+const ANALYTICS_CHECKLIST = [
+  "Communication",
+  "Confidence",
+  "Technical Skills",
+  "AI Insights",
+];
+
+export default function DashboardPage() {
+  const router = useRouter();
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  const [isGuest, setIsGuest] = useState(false);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [spotlight, setSpotlight] = useState({ x: 50, y: 50 });
+
+  // ---------------------------------------------------------------------------
+  // Auth Guard
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const guestState = localStorage.getItem("isGuest") === "true";
+
+    if (!token && !guestState) {
+      router.push("/login");
+    }
+  }, [router]);
+
+  // Sync Guest state & fetch analytics client-side (only if not guest)
+  useEffect(() => {
+    const guestState = localStorage.getItem("isGuest") === "true";
+    setIsGuest(guestState);
+
+    if (!guestState) {
+      apiFetch("/api/dashboard/analytics")
+        .then((data) => setAnalytics(data))
+        .catch((err) => console.error("Failed to load analytics:", err));
+    }
+  }, []);
+
+  // Spotlight Mouse Tracking
+>>>>>>> origin/main
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;
@@ -46,6 +99,36 @@ export default function DashboardPage() {
     return () => el.removeEventListener("mousemove", handleMove);
   }, []);
 
+<<<<<<< HEAD
+=======
+  // Logout Handler
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("isGuest");
+    router.push("/login");
+  };
+
+  const ANALYTICS_METRICS = [
+    {
+      label: "Interviews Completed",
+      value: analytics?.interviews_completed ?? "—",
+    },
+    {
+      label: "Average Score",
+      value: analytics?.average_score ?? "—",
+    },
+    {
+      label: "Current Streak",
+      value: analytics?.current_streak ?? "—",
+    },
+    {
+      label: "DSA Solved",
+      value: analytics?.dsa_solved ?? "—",
+    },
+  ];
+
+>>>>>>> origin/main
   return (
     <main className="min-h-screen bg-black text-slate-100">
       <style>{`
@@ -82,9 +165,13 @@ export default function DashboardPage() {
         }
       `}</style>
 
+<<<<<<< HEAD
       {/* ---------------------------------------------------------------- */}
       {/* Top bar                                                          */}
       {/* ---------------------------------------------------------------- */}
+=======
+      {/* Header Bar */}
+>>>>>>> origin/main
       <header className="relative z-20 flex items-center justify-between border-b border-white/5 px-6 py-4 sm:px-10">
         <Link
           href="/"
@@ -92,6 +179,7 @@ export default function DashboardPage() {
         >
           THE REAL ROOM
         </Link>
+<<<<<<< HEAD
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-400">
           <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
           Guest
@@ -104,15 +192,63 @@ export default function DashboardPage() {
           <span>Guest Mode — your progress won&apos;t be saved.</span>
           <Link href="/login" className="font-medium text-cyan-300 transition hover:text-cyan-200">
             Sign In →
+=======
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-400">
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                isGuest ? "bg-amber-400" : "bg-emerald-400"
+              }`}
+            />
+            {isGuest ? "Guest" : "Authenticated"}
+          </div>
+
+          {/* REQUIREMENT: Remove Sign Out option in Guest Mode */}
+          {isGuest ? (
+            <Link
+              href="/login"
+              className="rounded-lg bg-cyan-600 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-cyan-500"
+            >
+              Sign In / Register
+            </Link>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              Sign Out
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Guest Mode Banner */}
+      {isGuest && (
+        <div className="relative z-20 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-white/5 bg-white/[0.02] px-6 py-2.5 text-center text-xs text-slate-400 sm:text-sm">
+          <span>Guest Mode — analytics, metrics, and session records are disabled.</span>
+          <Link
+            href="/login"
+            className="font-medium text-cyan-300 transition hover:text-cyan-200"
+          >
+            Create an Account →
+>>>>>>> origin/main
           </Link>
         </div>
       )}
 
+<<<<<<< HEAD
       {/* ---------------------------------------------------------------- */}
       {/* Hero                                                             */}
       {/* ---------------------------------------------------------------- */}
       <div ref={heroRef} className="relative overflow-hidden px-6 pb-28 pt-20 sm:px-10">
         {/* Cursor spotlight (desktop only) */}
+=======
+      {/* Hero Section */}
+      <div
+        ref={heroRef}
+        className="relative overflow-hidden px-6 pb-28 pt-20 sm:px-10"
+      >
+>>>>>>> origin/main
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 z-0 hidden md:block"
@@ -121,7 +257,10 @@ export default function DashboardPage() {
           }}
         />
 
+<<<<<<< HEAD
         {/* Ambient glow orbs */}
+=======
+>>>>>>> origin/main
         <div
           aria-hidden
           className="trr-orb-a pointer-events-none absolute -left-20 top-0 h-[420px] w-[420px] rounded-full bg-cyan-400/15 blur-[110px]"
@@ -131,7 +270,10 @@ export default function DashboardPage() {
           className="trr-orb-b pointer-events-none absolute -right-24 top-10 h-[360px] w-[360px] rounded-full bg-indigo-500/15 blur-[110px]"
         />
 
+<<<<<<< HEAD
         {/* Faint grid */}
+=======
+>>>>>>> origin/main
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.07]"
@@ -139,6 +281,7 @@ export default function DashboardPage() {
             backgroundImage:
               "linear-gradient(to right, rgba(148,163,184,0.4) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.4) 1px, transparent 1px)",
             backgroundSize: "56px 56px",
+<<<<<<< HEAD
             maskImage: "radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 100%)",
           }}
         />
@@ -161,6 +304,13 @@ export default function DashboardPage() {
         <div className="trr-node pointer-events-none absolute left-[85%] top-[26%] h-1.5 w-1.5 rounded-full bg-cyan-300 [animation-delay:0.9s]" />
 
         {/* Hero content */}
+=======
+            maskImage:
+              "radial-gradient(ellipse 70% 60% at 50% 30%, black 40%, transparent 100%)",
+          }}
+        />
+
+>>>>>>> origin/main
         <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
             Enter{" "}
@@ -169,10 +319,17 @@ export default function DashboardPage() {
             </span>
           </h1>
           <p className="mt-4 max-w-xl text-balance text-slate-400">
+<<<<<<< HEAD
             Practice company-specific AI interviews with voice, emotion, and live feedback.
           </p>
 
           {/* The CTA — the identity of this dashboard */}
+=======
+            Practice company-specific AI interviews with voice, emotion, and
+            live feedback.
+          </p>
+
+>>>>>>> origin/main
           <Link
             href="/interview"
             className="trr-cta group relative mt-12 flex w-full max-w-[440px] items-center justify-center overflow-hidden rounded-[28px] border border-cyan-300/30 bg-gradient-to-b from-white/[0.08] to-white/[0.02] px-8 py-7 backdrop-blur transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.02]"
@@ -183,9 +340,17 @@ export default function DashboardPage() {
             />
             <span className="relative flex flex-col items-center gap-1">
               <span className="flex items-center gap-2 text-xl font-semibold text-white sm:text-2xl">
+<<<<<<< HEAD
                  Start Interview
               </span>
               <span className="text-sm text-cyan-100/70">Your AI interviewer is waiting.</span>
+=======
+                Start Interview
+              </span>
+              <span className="text-sm text-cyan-100/70">
+                Your AI interviewer is waiting.
+              </span>
+>>>>>>> origin/main
             </span>
           </Link>
 
@@ -195,15 +360,20 @@ export default function DashboardPage() {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* ---------------------------------------------------------------- */}
       {/* Analytics                                                        */}
       {/* ---------------------------------------------------------------- */}
+=======
+      {/* Analytics Section — Hidden or locked for Guests */}
+>>>>>>> origin/main
       <div className="relative z-10 mx-auto max-w-4xl px-6 pb-24 sm:px-10">
         <section>
           <h2 className="mb-5 text-sm font-semibold uppercase tracking-[0.15em] text-slate-400">
             Your interview analytics
           </h2>
 
+<<<<<<< HEAD
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
             {/* Metric strip */}
             <div className="grid grid-cols-2 gap-4 border-b border-white/10 pb-6 sm:grid-cols-4">
@@ -231,6 +401,56 @@ export default function DashboardPage() {
               </ul>
             </div>
           </div>
+=======
+          {isGuest ? (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 text-center backdrop-blur">
+              <p className="text-3xl mb-2">🔒</p>
+              <h3 className="text-lg font-bold text-white mb-1">Analytics Locked in Guest Mode</h3>
+              <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">
+                Past track records, historical scores, and detailed AI performance breakdowns are only stored for registered users.
+              </p>
+              <Link
+                href="/login"
+                className="inline-block rounded-xl bg-cyan-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-500 shadow-lg"
+              >
+                Sign Up / Register to Save Track Records
+              </Link>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
+              <div className="grid grid-cols-2 gap-4 border-b border-white/10 pb-6 sm:grid-cols-4">
+                {ANALYTICS_METRICS.map((metric) => (
+                  <div key={metric.label}>
+                    <p className="text-2xl font-semibold text-slate-100">
+                      {metric.value}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500">{metric.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-6">
+                <p className="mb-1 text-base font-medium text-white">
+                  📊 Detailed Performance Breakdown
+                </p>
+                <p className="mb-5 text-sm text-slate-400">
+                  Complete your interviews to evaluate:
+                </p>
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {ANALYTICS_CHECKLIST.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2 text-sm text-slate-300"
+                    >
+                      <span className="text-cyan-300">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+>>>>>>> origin/main
         </section>
       </div>
     </main>
