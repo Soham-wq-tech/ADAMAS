@@ -18,8 +18,10 @@ export default function Home() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const token = localStorage.getItem("token");
     const guestStatus = localStorage.getItem("isGuest") === "true";
     if (token || guestStatus) {
@@ -71,8 +73,8 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Dynamic Top Right Section */}
-          {isLoggedIn ? (
+          {/* Dynamic Top Right Section: Defaults cleanly to Sign In until client mounts and verifies storage */}
+          {mounted && isLoggedIn ? (
             <div className="flex items-center gap-3">
               {/* Status Badge */}
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300">

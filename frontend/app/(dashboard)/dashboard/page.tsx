@@ -64,12 +64,12 @@ export default function DashboardPage() {
     return () => el.removeEventListener("mousemove", handleMove);
   }, []);
 
-  // Logout Handler
+  // Logout Handler — Clears session and redirects to the home page (/)
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("isGuest");
-    router.push("/login");
+    router.push("/");
   };
 
   const ANALYTICS_METRICS = [
@@ -145,22 +145,13 @@ export default function DashboardPage() {
             {isGuest ? "Guest" : "Authenticated"}
           </div>
 
-          {/* REQUIREMENT: Remove Sign Out option in Guest Mode */}
-          {isGuest ? (
-            <Link
-              href="/login"
-              className="rounded-lg bg-cyan-600 px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-cyan-500"
-            >
-              Sign In / Register
-            </Link>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10 hover:text-white"
-            >
-              Sign Out
-            </button>
-          )}
+          {/* Sign Out option for both Guest and Authenticated users */}
+          <button
+            onClick={handleLogout}
+            className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10 hover:text-white"
+          >
+            Sign Out
+          </button>
         </div>
       </header>
 
