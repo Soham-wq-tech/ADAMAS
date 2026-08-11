@@ -44,7 +44,8 @@ export default function LoginPage() {
         if (data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
-        localStorage.removeItem("isGuest");
+        // Explicitly set isGuest to false for regular users so navbar updates properly
+        localStorage.setItem("isGuest", "false");
         router.push("/dashboard");
       } else {
         setError("Account not found or invalid credentials. Please sign up to create an account.");

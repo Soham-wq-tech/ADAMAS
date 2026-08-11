@@ -1,7 +1,12 @@
 // app/page.tsx
 // Next.js (App Router) + Tailwind landing page
+
+"use client";
+
+import { useEffect, useState } from "react";
 import HowItWorks from "./components/landing/HowItWorks";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AIInterviewBackground from "./components/landing/AIInterviewBackground";
 import ThreeHero from "./components/landing/ThreeHero";
 import Companies from "./components/landing/Companies";
@@ -10,6 +15,30 @@ import Footer from "./components/landing/Footer";
 const PRODUCT_NAME = "The Real Room";
 
 export default function Home() {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const guestStatus = localStorage.getItem("isGuest") === "true";
+    if (token || guestStatus) {
+      setIsLoggedIn(true);
+      setIsGuest(guestStatus);
+    }
+  }, []);
+
+  const handleEnterRoom = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const guestStatus = localStorage.getItem("isGuest");
+    if (token || guestStatus) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login");
+    }
+  };
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-slate-100">
       <AIInterviewBackground />
@@ -17,9 +46,9 @@ export default function Home() {
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <span className="text-base font-extrabold uppercase tracking-[0.2em] bg-gradient-to-r from-blue-400 via-sky-400 to-blue-500 bg-clip-text text-transparent">
+            <Link href="/" className="text-base font-extrabold uppercase tracking-[0.2em] bg-gradient-to-r from-blue-400 via-sky-400 to-blue-500 bg-clip-text text-transparent hover:opacity-80 transition">
               {PRODUCT_NAME}
-            </span>
+            </Link>
           </div>
           <div className="hidden items-center gap-8 md:flex">
             <a
@@ -41,12 +70,31 @@ export default function Home() {
               Resources
             </a>
           </div>
-          <Link
-            href="/login"
-            className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition hover:bg-white/10"
-          >
-            Sign In
-          </Link>
+
+          {/* Dynamic Top Right Section */}
+          {isLoggedIn ? (
+            <div className="flex items-center gap-3">
+              {/* Status Badge */}
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300">
+                <span className={`h-1.5 w-1.5 rounded-full ${isGuest ? "bg-amber-400" : "bg-emerald-400"}`} />
+                {isGuest ? "Guest" : "Authenticated"}
+              </span>
+
+              <Link
+                href="/dashboard"
+                className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/20"
+              >
+                Go to Dashboard →
+              </Link>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-slate-100 transition hover:bg-white/10"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </nav>
 
@@ -82,9 +130,9 @@ export default function Home() {
 
         {/* CTAs */}
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/login"
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40"
+          <button
+            onClick={handleEnterRoom}
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <span className="relative flex items-center gap-3">
@@ -93,7 +141,7 @@ export default function Home() {
                 →
               </span>
             </span>
-          </Link>
+          </button>
         </div>
 
         <ThreeHero />
