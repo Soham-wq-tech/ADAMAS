@@ -133,7 +133,16 @@ def end_interview(interview_id):
     interview.status = "completed"
     interview.ended_at = datetime.utcnow()
     
-    interview.score = result.get("score")
+    # Ensure score is explicitly saved as an integer so the frontend can check >= 70
+    raw_score = result.get("score")
+    if raw_score is not None:
+        try:
+            interview.score = int(raw_score)
+        except (ValueError, TypeError):
+            interview.score = 40
+    else:
+        interview.score = 40
+
     interview.communication_score = result.get("communication_score") or result.get("communication")
     interview.confidence_score = result.get("confidence_score") or result.get("confidence")
     interview.technical_score = result.get("technical_score") or result.get("technical")

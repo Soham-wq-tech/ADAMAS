@@ -371,7 +371,7 @@ export default function InterviewSetupPage() {
                 className="text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-500/10 file:text-cyan-400 hover:file:bg-cyan-500/20 cursor-pointer"
               />
               <p className="mt-2 text-xs text-slate-500">
-                Gemini will read your resume to tailor interview questions around your projects and background.
+                The AI will read your resume to tailor interview questions around your projects and background.
               </p>
             </div>
           )}

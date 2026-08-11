@@ -11,9 +11,6 @@ interface InterviewResult {
   interview_type?: string;
   type?: string;
   score?: number;
-  communication_score?: number;
-  confidence_score?: number;
-  technical_score?: number;
   feedback_summary?: string;
 }
 
@@ -32,7 +29,6 @@ function InterviewCompletedContent() {
     const guestState = localStorage.getItem("isGuest") === "true";
     setIsGuest(guestState);
 
-    // If guest mode, do not attempt to fetch private track metrics
     if (guestState) {
       setLoading(false);
       return;
@@ -71,24 +67,29 @@ function InterviewCompletedContent() {
     );
   }
 
+  // Determine final score (defaults to 75% if data is missing, change fallback as needed)
+  const finalScore = result?.score !== undefined && result?.score !== null ? result.score : 75;
+  const isHired = finalScore >= 70;
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-black px-6 py-12 text-slate-100 sm:px-10">
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-[400px] w-[700px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-cyan-500/10 blur-[130px]"
+        className={`pointer-events-none absolute left-1/2 top-0 h-[400px] w-[700px] -translate-x-1/2 -translate-y-1/3 rounded-full blur-[130px] ${
+          isHired ? "bg-emerald-500/10" : "bg-rose-500/10"
+        }`}
       />
 
       <div className="relative z-10 mx-auto max-w-3xl">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            Interview Completed! 🎉
+            Interview Completed! 🎯
           </h1>
           <p className="mt-2 text-slate-400">
-            Great job pushing through your{" "}
+            Session summary for{" "}
             <span className="text-cyan-300 font-medium">
               {result?.company || fallbackCompany} ({result?.interview_type || result?.type || fallbackType})
-            </span>{" "}
-            session.
+            </span>
           </p>
         </div>
 
@@ -100,7 +101,7 @@ function InterviewCompletedContent() {
               Performance Metrics & Track Records Locked
             </h2>
             <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed mb-6">
-              You completed this practice session in <span className="text-cyan-400 font-semibold">Guest Mode</span>. Detailed AI scores, confidence breakdowns, and interview history are saved exclusively for registered accounts.
+              You completed this practice session in <span className="text-cyan-400 font-semibold">Guest Mode</span>. Detailed AI hiring decisions and evaluation history are saved exclusively for registered accounts.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -113,36 +114,33 @@ function InterviewCompletedContent() {
             </div>
           </div>
         ) : (
-          /* AUTHENTICATED USER METRICS GRID & FEEDBACK */
+          /* AUTHENTICATED USER HIRING DECISION & SINGLE OVERALL METRIC */
           <>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur">
-                <span className="text-xs uppercase tracking-widest text-slate-400 block mb-1">Overall Score</span>
-                <span className="text-3xl font-bold text-cyan-400">
-                  {result?.score !== undefined && result?.score !== null ? `${result.score}%` : "75%"}
-                </span>
+            <div className={`rounded-3xl border p-8 text-center backdrop-blur-xl shadow-2xl mb-8 transition-all ${
+              isHired 
+                ? "border-emerald-500/30 bg-emerald-950/20 shadow-emerald-500/10" 
+                : "border-rose-500/30 bg-rose-950/20 shadow-rose-500/10"
+            }`}>
+              <span className="text-xs uppercase tracking-widest text-slate-400 block mb-2">
+                Overall Evaluated Performance Score
+              </span>
+              <div className={`text-5xl font-extrabold mb-4 ${isHired ? "text-emerald-400" : "text-rose-400"}`}>
+                {finalScore}%
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur">
-                <span className="text-xs uppercase tracking-widest text-slate-400 block mb-1">Confidence</span>
-                <span className="text-3xl font-bold text-emerald-400">
-                  {result?.confidence_score !== undefined && result?.confidence_score !== null ? `${result.confidence_score}%` : "75%"}
-                </span>
+              <div className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold tracking-wider mb-3 ${
+                isHired 
+                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" 
+                  : "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+              }`}>
+                {isHired ? "🎉 YOU'RE HIRED!" : "❌ SORRY, NOT SELECTED"}
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur">
-                <span className="text-xs uppercase tracking-widest text-slate-400 block mb-1">Communication</span>
-                <span className="text-3xl font-bold text-sky-400">
-                  {result?.communication_score !== undefined && result?.communication_score !== null ? `${result.communication_score}%` : "80%"}
-                </span>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur">
-                <span className="text-xs uppercase tracking-widest text-slate-400 block mb-1">Technical</span>
-                <span className="text-3xl font-bold text-purple-400">
-                  {result?.technical_score !== undefined && result?.technical_score !== null ? `${result.technical_score}%` : "70%"}
-                </span>
-              </div>
+              <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                {isHired 
+                  ? "Outstanding performance! You met or exceeded all technical and structural expectations required for this role." 
+                  : "Unfortunately, you didn't clear the 70% threshold required for this role. Review the recommendations below to improve for your next attempt."}
+              </p>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur mb-10">

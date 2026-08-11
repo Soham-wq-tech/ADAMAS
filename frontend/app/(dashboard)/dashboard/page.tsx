@@ -79,7 +79,7 @@ export default function DashboardPage() {
     },
     {
       label: "Average Score",
-      value: analytics?.average_score ?? "—",
+      value: analytics?.average_score !== undefined && analytics?.average_score !== null ? `${analytics.average_score}%` : "—",
     },
     {
       label: "Current Streak",
@@ -283,10 +283,10 @@ export default function DashboardPage() {
 
               <div className="pt-6">
                 <p className="mb-1 text-base font-medium text-white">
-                  📊 Detailed Performance Breakdown
+                  📊 Overall Performance & AI Evaluation
                 </p>
                 <p className="mb-5 text-sm text-slate-400">
-                  Complete your interviews to evaluate:
+                  Completing your interview shows your overall performance metrics and determines if you are hired by AI before entering the real room:
                 </p>
                 <ul className="grid gap-2 sm:grid-cols-2">
                   {ANALYTICS_CHECKLIST.map((item) => (
