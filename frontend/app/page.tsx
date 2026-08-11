@@ -114,7 +114,7 @@ export default function Home() {
         {/* Eyebrow badge */}
         <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300 backdrop-blur">
           <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-          AI Interview Practice
+          Mock Interview Prep for Aspiring Students
         </span>
 
         {/* Headline */}
@@ -126,8 +126,8 @@ export default function Home() {
         </h1>
 
         <p className="mt-5 max-w-xl text-balance text-base text-slate-400 sm:text-lg">
-          Practice real interviews with an AI that listens, adapts, and pushes back —
-          then get a clear breakdown of what to fix before the real one.
+          Master your placement interviews with an AI that listens, adapts, and pushes back —
+          giving aspiring students a realistic simulation before stepping into the real room.
         </p>
 
         {/* CTAs */}
@@ -168,7 +168,7 @@ export default function Home() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-            Choose a company DSA sheet below to view problem sets and download materials. More company sheets will be added in future updates.
+            Choose a company DSA sheet below to view problem sets and download materials tailored for student success. More company sheets will be added in future updates.
           </p>
         </div>
 
