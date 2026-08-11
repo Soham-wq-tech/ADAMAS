@@ -1,6 +1,10 @@
 "use client";
 
+<<<<<<< HEAD
+import { Mic, MicOff, Video, VideoOff } from "lucide-react";
+=======
 import { Mic, MicOff, Video, VideoOff, Send } from "lucide-react";
+>>>>>>> origin/main
 
 interface VoiceControlsProps {
   cameraOn: boolean;
@@ -8,17 +12,29 @@ interface VoiceControlsProps {
   isListening: boolean;
   startListening: () => void;
   stopListening: () => void;
+<<<<<<< HEAD
+}
+=======
   onSendSpeech?: () => void;
 }
 
+>>>>>>> origin/main
 export default function VoiceControls({
   cameraOn,
   setCameraOn,
   isListening,
   startListening,
   stopListening,
+<<<<<<< HEAD
+}: VoiceControlsProps) {
+  
+
+ 
+
+=======
   onSendSpeech,
 }: VoiceControlsProps) {
+>>>>>>> origin/main
   const toggleMic = () => {
     if (isListening) {
       stopListening();
@@ -28,6 +44,20 @@ export default function VoiceControls({
   };
 
   return (
+<<<<<<< HEAD
+    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4">
+      <div className="flex items-center justify-center gap-5">
+
+        {/* Camera */}
+        <button
+          onClick={() => setCameraOn(!cameraOn)}
+          className={`flex h-14 w-14 items-center justify-center rounded-full transition-all
+  ${
+    cameraOn
+      ? "bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_25px_rgba(34,211,238,.6)]"
+      : "bg-red-600 hover:bg-red-500"
+  }`}
+=======
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
       <div className="flex items-center justify-center gap-4">
         {/* Camera Toggle */}
@@ -40,10 +70,22 @@ export default function VoiceControls({
               : "bg-red-600 hover:bg-red-500"
           }`}
           title={cameraOn ? "Turn Camera Off" : "Turn Camera On"}
+>>>>>>> origin/main
         >
           {cameraOn ? <Video size={24} /> : <VideoOff size={24} />}
         </button>
 
+<<<<<<< HEAD
+        {/* Microphone */}
+        <button
+          onClick={toggleMic}
+          className={`flex h-16 w-16 items-center justify-center rounded-full transition-all
+  ${
+    isListening
+      ? "bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_25px_rgba(34,211,238,.6)]"
+      : "bg-red-600 hover:bg-red-500"
+  }`}
+=======
         {/* Microphone Toggle */}
         <button
           type="button"
@@ -54,10 +96,17 @@ export default function VoiceControls({
               : "bg-red-600 hover:bg-red-500"
           }`}
           title={isListening ? "Mute Microphone" : "Start Speaking"}
+>>>>>>> origin/main
         >
           {isListening ? <Mic size={28} /> : <MicOff size={28} />}
         </button>
 
+<<<<<<< HEAD
+      </div>
+
+      <p className="mt-4 text-center text-sm text-slate-400">
+        {isListening ? "Microphone Active" : "Microphone Muted"}
+=======
         {/* Send Spoken Response */}
         {onSendSpeech && (
           <button
@@ -76,6 +125,7 @@ export default function VoiceControls({
         {isListening
           ? "Microphone Active — Speak & Click Send"
           : "Microphone Muted"}
+>>>>>>> origin/main
       </p>
     </div>
   );

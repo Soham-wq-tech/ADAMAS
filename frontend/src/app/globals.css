@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/main
 @import "tailwindcss";
 
 :root {
@@ -24,3 +28,28 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+<<<<<<< HEAD
+=======
+
+@import "tailwindcss";
+
+:root {
+  --background: #050505;
+  --foreground: #ffffff;
+}
+
+
+body {
+  background:
+  radial-gradient(
+    circle at top,
+    #1a1a2e,
+    #050505 50%
+  );
+
+  color:white;
+  min-height:100vh;
+}
+>>>>>>> origin/souvik
+=======
+>>>>>>> origin/main

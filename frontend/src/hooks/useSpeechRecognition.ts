@@ -7,7 +7,10 @@ interface SpeechRecognitionResult {
   isListening: boolean;
   startListening: () => void;
   stopListening: () => void;
+<<<<<<< HEAD
+=======
   resetTranscript: () => void;
+>>>>>>> origin/main
 }
 
 export default function useSpeechRecognition(): SpeechRecognitionResult {
@@ -18,8 +21,13 @@ export default function useSpeechRecognition(): SpeechRecognitionResult {
 
   const startListening = () => {
     const SpeechRecognition =
+<<<<<<< HEAD
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+=======
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
+>>>>>>> origin/main
 
     if (!SpeechRecognition) {
       alert("Speech recognition is not supported in this browser.");
@@ -39,8 +47,18 @@ export default function useSpeechRecognition(): SpeechRecognitionResult {
     recognition.onresult = (event: any) => {
       let currentTranscript = "";
 
+<<<<<<< HEAD
+      for (
+        let i = event.resultIndex;
+        i < event.results.length;
+        i++
+      ) {
+        currentTranscript +=
+          event.results[i][0].transcript;
+=======
       for (let i = event.resultIndex; i < event.results.length; i++) {
         currentTranscript += event.results[i][0].transcript;
+>>>>>>> origin/main
       }
 
       setTranscript(currentTranscript);
@@ -63,15 +81,21 @@ export default function useSpeechRecognition(): SpeechRecognitionResult {
     setIsListening(false);
   };
 
+<<<<<<< HEAD
+=======
   const resetTranscript = () => {
     setTranscript("");
   };
 
+>>>>>>> origin/main
   return {
     transcript,
     isListening,
     startListening,
     stopListening,
+<<<<<<< HEAD
+=======
     resetTranscript,
+>>>>>>> origin/main
   };
 }
