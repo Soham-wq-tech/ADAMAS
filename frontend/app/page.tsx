@@ -215,7 +215,7 @@ export default function Home() {
 
         {/* Future Notice Row */}
         <div className="mt-8 rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-6 text-center text-sm text-slate-400">
-          Note: DSA sheets for NVIDIA, Apple, Meta, Atlassian, and other companies will be added in future updates.
+          Designed to empower student placement prep and mock interview readiness. DSA sheets for NVIDIA, Apple, Meta, Atlassian, and other companies will be added in future updates.
         </div>
       </section>
 
