@@ -310,16 +310,14 @@ return <>{points}</>
 function NeuralNetwork(){
 
 
-const nodes=[
-
-[-1,1,0],
-[0,1.5,0],
-[1,1,0],
-[-1,0,0],
-[0,0.5,0],
-[1,0,0]
-
-]
+const nodes: [number, number, number][] = [
+  [-1, 1, 0],
+  [0, 1.5, 0],
+  [1, 1, 0],
+  [-1, 0, 0],
+  [0, 0.5, 0],
+  [1, 0, 0],
+];
 
 
 return (
