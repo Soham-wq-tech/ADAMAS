@@ -39,15 +39,15 @@ export default function Footer() {
 
         <div>
           <h3 className="mb-4 font-semibold text-white">
-            Built For
+            Purpose
           </h3>
 
           <p className="text-slate-400">
-            Hackathons 🚀
+            Student Placement Prep 🎯
           </p>
 
           <p className="mt-2 text-slate-500 text-sm">
-            AI Interview Simulation Platform
+            Mock Interview Simulation Platform
           </p>
         </div>
 
