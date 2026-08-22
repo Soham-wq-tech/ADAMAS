@@ -10,15 +10,42 @@ interface Message {
   tag?: string;
 }
 
+type Stage =
+  | "answer"
+  | "challenge"
+  | "defense"
+  | "evaluation"
+  | "mastery";
+
 interface DialecticChatProps {
+  sessionId?: string | null;
+  stage?: string;
   onConceptUnlocked?: (concept: string) => void;
+  onStageChange?: (stage: any) => void;
+  onMasteryUpdate?: (score: number) => void;
+  onLastAnswerUpdate?: (answer: string) => void;
+  onCurrentChallengeUpdate?: (challenge: string) => void;
 }
 
-export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps) {
+export default function DialecticChat({ 
+  sessionId, 
+  stage = "answer",
+  onConceptUnlocked, 
+  onStageChange,
+  onMasteryUpdate,
+  onLastAnswerUpdate,
+  onCurrentChallengeUpdate
+}: DialecticChatProps) {
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  // Track offline pillar progression sequentially to gate early completion
+  const [pillarStep, setPillarStep] = useState(0);
+  const allPillars = ["Range Reduction", "Midpoint Invariant", "Monotonicity"];
+  
   const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -26,17 +53,15 @@ export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps)
     {
       id: "1",
       sender: "ai",
-      text: "Welcome to The Real Room Socratic Mode! Let's analyze the Two Sum problem together. How would you intuitively solve this manually?",
+      text: "Welcome to The Real Room Socratic Mode!\n\n**Topic:** Binary Search Optimization\n**Core Problem:** Determine the conditions under which binary search can be applied to non-monotonic functions.\n\nHow would you intuitively define the search space and monotonicity properties required for this?",
       tag: "Socratic Inquiry",
     },
   ]);
 
-  // Scroll to bottom on new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Initialize Web Speech API for Speech-to-Text
   useEffect(() => {
     if (typeof window !== "undefined") {
       const SpeechRecognition =
@@ -70,11 +95,10 @@ export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps)
     }
   }, []);
 
-  // Text-to-Speech (AI Voice)
   const speakText = (text: string) => {
     if (isMuted || typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
-    window.speechSynthesis.cancel(); // Stop ongoing speech
+    window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1.0;
     utterance.pitch = 1.0;
@@ -86,7 +110,6 @@ export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps)
     window.speechSynthesis.speak(utterance);
   };
 
-  // Toggle Voice Input (Mic)
   const toggleListening = () => {
     if (!recognitionRef.current) {
       alert("Speech recognition is not supported in this browser.");
@@ -102,7 +125,6 @@ export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps)
     }
   };
 
-  // Toggle AI Audio Output
   const toggleMute = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -111,118 +133,251 @@ export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps)
     setIsMuted(!isMuted);
   };
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
 
     if (isListening && recognitionRef.current) {
       recognitionRef.current.stop();
       setIsListening(false);
     }
 
+    const userText = input;
+    const isDefending = stage === "defense";
+
     const userMsg: Message = {
       id: Date.now().toString(),
       sender: "user",
-      text: input,
+      text: userText,
+      tag: isDefending ? "Defense" : "Answer",
     };
 
     setMessages((prev) => [...prev, userMsg]);
-    const currentInput = input;
     setInput("");
+    setLoading(true);
 
-    // Simulate Socratic AI Real-Time Voice & Text Response
+    if (onLastAnswerUpdate) {
+      onLastAnswerUpdate(userText);
+    }
+
+    const isFallbackSession = !sessionId || sessionId.includes("fallback");
+
+    if (!isFallbackSession) {
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+
+        const endpoint = isDefending 
+          ? `${API_BASE}/api/socratic/${sessionId}/defense`
+          : `${API_BASE}/api/socratic/${sessionId}/answer`;
+        
+        const payload = isDefending ? { defense: userText } : { answer: userText };
+
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            ...(token ? { "Authorization": `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          let aiText = "";
+          let tag = "Socratic Inquiry";
+
+          if (isDefending) {
+            aiText = data.evaluation || "Defense evaluated successfully.";
+            tag = `Evaluation (Score: ${((data.mastery_score || 0) * 100).toFixed(0)}%)`;
+            if (data.mastery_score !== undefined && onMasteryUpdate) {
+              onMasteryUpdate(data.mastery_score);
+            }
+          } else {
+            if (data.valid === false) {
+              aiText = `[Needs Refinement]: ${data.feedback} Try considering: ${data.current_challenge}`;
+              tag = "Guided Probe (Flawed Logic)";
+            } else {
+              aiText = data.current_challenge || data.feedback || "Let's explore further.";
+              tag = "Challenge Probed";
+              if (onCurrentChallengeUpdate) {
+                onCurrentChallengeUpdate(aiText);
+              }
+            }
+            if (data.session?.concepts && data.session.concepts.length > 0 && onConceptUnlocked) {
+              onConceptUnlocked(data.session.concepts[0]);
+            }
+          }
+
+          const nextStage = data.current_stage || data.stage || (isDefending ? "evaluation" : "challenge");
+          if (onStageChange) onStageChange(nextStage);
+
+          const aiResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            sender: "ai",
+            text: aiText,
+            tag: tag,
+          };
+
+          setMessages((prev) => [...prev, aiResponse]);
+          speakText(aiText);
+          setLoading(false);
+          return;
+        }
+      } catch (err) {
+        console.warn("Backend request failed, falling back to local simulation:", err);
+      }
+    }
+
+    // --- OFFLINE / FALLBACK SIMULATION WITH CONCEPT GATING ---
     setTimeout(() => {
-      const aiText = "Interesting approach! If you scan sequentially, what happens to time complexity as N grows? Could a Hash Map optimize this lookup?";
+      let aiText = "";
+      let tag = "";
+      let unlockedConcept = "";
+      let nextStageValue: any = stage; // Avoids TypeScript union incompatibility error
+
+      // Check if we still have pillars left to cover sequentially
+      if (pillarStep < allPillars.length - 1) {
+        const nextStep = pillarStep + 1;
+        setPillarStep(nextStep);
+        unlockedConcept = allPillars[nextStep];
+
+        if (unlockedConcept === "Midpoint Invariant") {
+          aiText = "Good range reduction logic. Now, how do we guarantee correctness with integer overflow and the midpoint invariant?";
+          tag = "Probing: Midpoint Invariant";
+          nextStageValue = "challenge";
+        } else if (unlockedConcept === "Monotonicity") {
+          aiText = "Almost there! How does your logic adapt when the function is non-monotonic or piecewise?";
+          tag = "Probing: Monotonicity";
+          nextStageValue = "defense";
+        }
+
+        if (onMasteryUpdate) onMasteryUpdate(0.67 + (nextStep * 0.12));
+      } else {
+        // All pillars are covered and verified. Gate opens for final mastery!
+        aiText = "All foundational concepts (Range Reduction, Midpoint Invariant, Monotonicity) have been successfully mastered. Session Complete!";
+        tag = "Mastery Achieved";
+        nextStageValue = "mastery";
+        unlockedConcept = "Monotonicity";
+        if (onMasteryUpdate) onMasteryUpdate(0.92);
+      }
+
+      if (onStageChange) {
+        onStageChange(nextStageValue);
+      }
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
         text: aiText,
-        tag: "Guided Probe",
+        tag: tag,
       };
 
       setMessages((prev) => [...prev, aiResponse]);
       speakText(aiText);
 
-      if (onConceptUnlocked) {
-        onConceptUnlocked("Time Complexity Bottlenecks");
+      if (unlockedConcept && onConceptUnlocked) {
+        onConceptUnlocked(unlockedConcept);
       }
+      setLoading(false);
     }, 1000);
   };
 
   return (
-    <div className="flex-1 flex flex-col rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl overflow-hidden relative">
-      {/* Top Header Controls for Audio */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-white/10 bg-black/40">
-        <div className="flex items-center gap-2">
-          <span className={`h-2.5 w-2.5 rounded-full ${isSpeaking ? "bg-cyan-400 animate-ping" : "bg-emerald-400"}`} />
-          <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-            {isSpeaking ? "AI Speaking..." : "Interactive Dialogue"}
-          </span>
+    <div className="flex-1 flex flex-col rounded-3xl border border-white/15 bg-gradient-to-b from-white/[0.07] to-white/[0.02] backdrop-blur-2xl shadow-2xl overflow-hidden relative">
+      {/* Top Header Controls for Audio & Status */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/50">
+        <div className="flex items-center gap-3">
+          <div className="relative flex items-center justify-center">
+            <span className={`h-3 w-3 rounded-full ${isSpeaking ? "bg-cyan-400 animate-ping absolute" : "bg-emerald-400"}`} />
+            <span className={`h-3 w-3 rounded-full ${isSpeaking ? "bg-cyan-400" : "bg-emerald-400"}`} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-white tracking-wide">Dialectic Socratic Chamber</h2>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 uppercase font-semibold">
+                Stage: {stage}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              {isSpeaking ? "AI Probing Active..." : "Binary Search Optimization Focus"}
+            </p>
+          </div>
         </div>
 
         <button
           onClick={toggleMute}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-semibold transition ${
             isMuted
               ? "border-red-500/30 bg-red-500/10 text-red-400"
-              : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+              : "border-white/15 bg-white/5 text-slate-200 hover:bg-white/10"
           }`}
         >
           {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-          {isMuted ? "Audio Muted" : "Audio On"}
+          {isMuted ? "Audio Muted" : "Voice On"}
         </button>
       </div>
 
       {/* Message Stream */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex items-start gap-3 ${
+            className={`flex items-start gap-3.5 ${
               msg.sender === "user" ? "flex-row-reverse" : "flex-row"
             }`}
           >
             <div
-              className={`p-2.5 rounded-xl shrink-0 border ${
+              className={`p-2.5 rounded-2xl shrink-0 border shadow-md ${
                 msg.sender === "user"
-                  ? "bg-white/10 border-white/15 text-white"
-                  : "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                  ? "bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border-cyan-500/40 text-cyan-300"
+                  : "bg-black/80 border-white/20 text-white"
               }`}
             >
-              {msg.sender === "user" ? <User size={16} /> : <Bot size={16} />}
+              {msg.sender === "user" ? <User size={18} /> : <Bot size={18} />}
             </div>
 
             <div
-              className={`max-w-[80%] rounded-2xl p-4 text-sm ${
+              className={`max-w-[78%] rounded-2xl p-5 shadow-xl transition-all ${
                 msg.sender === "user"
-                  ? "bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-semibold rounded-tr-none shadow-lg"
-                  : "bg-black/60 border border-white/10 text-slate-200 rounded-tl-none backdrop-blur-md"
+                  ? "bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-semibold rounded-tr-none shadow-cyan-500/10"
+                  : "bg-black/70 border border-white/15 text-slate-100 rounded-tl-none backdrop-blur-xl"
               }`}
             >
               {msg.tag && (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-cyan-400 mb-1.5 uppercase tracking-wider">
-                  <Sparkles size={10} /> {msg.tag}
+                <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider mb-2 px-2.5 py-1 rounded-lg ${
+                  msg.sender === "user" 
+                    ? "bg-black/20 text-black" 
+                    : "bg-cyan-500/15 border border-cyan-500/30 text-cyan-300"
+                }`}>
+                  <Sparkles size={12} /> {msg.tag}
                 </span>
               )}
-              <p className="leading-relaxed">{msg.text}</p>
+              <p className={`text-base leading-relaxed whitespace-pre-line ${msg.sender === "user" ? "text-black font-bold" : "text-slate-100 font-medium"}`}>
+                {msg.text}
+              </p>
             </div>
           </div>
         ))}
+        {loading && (
+          <div className="flex items-center gap-2 text-cyan-400 text-xs italic pl-12 animate-pulse">
+            <Sparkles size={14} /> Evaluating semantic validity & generating Socratic challenge...
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Bar with Integrated Speech-to-Text */}
-      <div className="p-4 border-t border-white/10 bg-black/40 backdrop-blur-md flex items-center gap-3">
-        {/* Mic Toggle Button */}
+      {/* Input Bar */}
+      <div className="p-4 border-t border-white/10 bg-black/60 backdrop-blur-xl flex items-center gap-3.5">
         <button
           onClick={toggleListening}
-          className={`p-3 rounded-xl border transition ${
+          className={`p-3.5 rounded-2xl border transition shadow-lg ${
             isListening
               ? "bg-red-500/20 border-red-500/50 text-red-400 animate-pulse"
-              : "bg-white/5 border-white/10 text-slate-400 hover:text-white hover:bg-white/10"
+              : "bg-white/5 border-white/15 text-slate-300 hover:text-white hover:bg-white/10"
           }`}
           title={isListening ? "Stop listening" : "Start speaking"}
         >
-          {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+          {isListening ? <MicOff size={20} /> : <Mic size={20} />}
         </button>
 
         <input
@@ -230,14 +385,22 @@ export default function DialecticChat({ onConceptUnlocked }: DialecticChatProps)
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder={isListening ? "Listening to your voice..." : "Explain your thought process or speak into mic..."}
-          className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 transition"
+          placeholder={
+            stage === "defense"
+              ? "Defend your reasoning against the challenge..."
+              : isListening
+              ? "Listening to your voice..."
+              : "Type your answer or explanation clearly..."
+          }
+          className="flex-1 bg-black/60 border border-white/15 rounded-2xl px-5 py-3.5 text-sm font-medium text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition shadow-inner"
         />
 
         <button
           onClick={handleSend}
-          className="p-3 bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-bold rounded-xl transition hover:scale-105 active:scale-95 cursor-pointer shadow-lg"
+          disabled={loading}
+          className="px-5 py-3.5 bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-extrabold text-sm rounded-2xl transition hover:scale-105 active:scale-95 cursor-pointer shadow-lg shadow-cyan-500/20 flex items-center gap-2 disabled:opacity-50"
         >
+          <span>{stage === "defense" ? "Defend" : "Send"}</span>
           <Send size={16} />
         </button>
       </div>

@@ -107,6 +107,15 @@ function LoginForm() {
 
       {/* Card Container */}
       <div className="w-full max-w-md rounded-xl border border-gray-800 bg-[#0D1117] p-8 shadow-2xl">
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-6 flex items-center gap-1.5 text-xs text-gray-400 transition hover:text-cyan-400 cursor-pointer"
+        >
+          <span>←</span> Back
+        </button>
+
         <h2 className="mb-1 text-xl font-semibold text-white">
           Welcome to The Real Room
         </h2>

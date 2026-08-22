@@ -15,20 +15,32 @@ export default function Home() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [redirectPath, setRedirectPath] = useState("/dashboard");
+  const [buttonLabel, setButtonLabel] = useState("Go to Interview Dashboard →");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const token = localStorage.getItem("token");
     const guestStatus = localStorage.getItem("isGuest") === "true";
+    const lastMode = localStorage.getItem("lastMode");
+
     if (token || guestStatus) {
       setIsLoggedIn(true);
       setIsGuest(guestStatus);
+      if (lastMode === "socratic") {
+        setRedirectPath("/socratic/dashboard");
+        setButtonLabel("Go to Socratic Dashboard →");
+      } else {
+        setRedirectPath("/dashboard");
+        setButtonLabel("Go to Interview Dashboard →");
+      }
     }
   }, []);
 
   const handleEnterRoom = (e: React.MouseEvent) => {
     e.preventDefault();
+    localStorage.setItem("lastMode", "interview");
     const token = localStorage.getItem("token");
     const guestStatus = localStorage.getItem("isGuest");
     if (token || guestStatus) {
@@ -40,12 +52,13 @@ export default function Home() {
 
   const handleEnterSocratic = (e: React.MouseEvent) => {
     e.preventDefault();
+    localStorage.setItem("lastMode", "socratic");
     const token = localStorage.getItem("token");
     const guestStatus = localStorage.getItem("isGuest");
     if (token || guestStatus) {
-      router.push("/socratic/room");
+      router.push("/socratic/dashboard");
     } else {
-      router.push("/login?redirect=/socratic/room");
+      router.push("/login?redirect=/socratic/dashboard");
     }
   };
 
@@ -79,6 +92,12 @@ export default function Home() {
               How It Works
             </a>
             <a
+              href="#companies"
+              className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+            >
+              Target Companies
+            </a>
+            <a
               href="#resources"
               className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
             >
@@ -99,10 +118,10 @@ export default function Home() {
               </span>
 
               <Link
-                href="/dashboard"
-                className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/20"
+                href={redirectPath}
+                className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/25"
               >
-                Go to Dashboard →
+                {buttonLabel}
               </Link>
             </div>
           ) : (
@@ -130,7 +149,7 @@ export default function Home() {
         {/* Eyebrow badge */}
         <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-sm text-slate-300 backdrop-blur">
           <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-          Mock Interview Prep for Aspiring Students
+          AI Mock Interviews & Socratic Learning for Aspiring Students
         </span>
 
         {/* Headline */}
@@ -142,21 +161,19 @@ export default function Home() {
         </h1>
 
         <p className="mt-5 max-w-xl text-balance text-base text-slate-400 sm:text-lg">
-          Master your placement interviews with an AI that listens, adapts, and
-          pushes back — giving aspiring students a realistic simulation before
-          stepping into the real room.
+          Master your placement interviews and deep technical concepts with an AI that listens, adapts, and pushes back — giving you realistic simulations and guided mastery before stepping in.
         </p>
 
         {/* CTAs */}
         <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
-          {/* Button 1: Enter The Room */}
+          {/* Button 1: Enter The Interview Room */}
           <button
             onClick={handleEnterRoom}
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-8 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <span className="relative flex items-center gap-3">
-              Enter The Room
+              Enter The Interview Room
               <span className="text-xl transition-transform group-hover:translate-x-1">
                 →
               </span>
@@ -166,7 +183,7 @@ export default function Home() {
           {/* Button 2: Socratic Mode */}
           <button
             onClick={handleEnterSocratic}
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-8 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <span className="relative flex items-center gap-3">
@@ -191,7 +208,7 @@ export default function Home() {
             Choose Your Preparation Pathway
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-            Whether you want a high-stakes, pressure-tested mock interview or step-by-step guided problem-solving, our platform adapts to your prep style.
+            Whether you want a high-stakes, pressure-tested mock interview or step-by-step guided problem-solving through dialogue, our platform adapts to your prep style.
           </p>
         </div>
 
@@ -266,6 +283,111 @@ export default function Home() {
 
       <HowItWorks />
 
+      {/* Target Companies Section */}
+      <section id="companies" className="relative z-10 mx-auto max-w-6xl px-6 py-20">
+        <div className="text-center">
+          <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-1 text-sm text-cyan-300">
+            Curated Interview Loops
+          </span>
+          <h2 className="mt-6 text-4xl font-bold text-white">
+            Target Companies We Offer
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-400">
+            Simulate exact recruitment patterns, coding challenges, and technical rounds tailored for top-tier technology firms.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Google */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Google</span>
+              <span className="text-xs rounded bg-blue-500/20 px-2 py-0.5 text-blue-300 font-mono">G</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Focuses on rigorous algorithmic optimization, tree/graph structures, and scalable system design principles.
+            </p>
+          </div>
+
+          {/* Microsoft */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Microsoft</span>
+              <span className="text-xs rounded bg-sky-500/20 px-2 py-0.5 text-sky-300 font-mono">M</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Tests core computer science fundamentals, object-oriented design patterns, and practical problem-solving.
+            </p>
+          </div>
+
+          {/* Amazon */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Amazon</span>
+              <span className="text-xs rounded bg-amber-500/20 px-2 py-0.5 text-amber-300 font-mono">A</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Emphasizes high-frequency coding rounds, concurrency, and behavioral integration based on Leadership Principles.
+            </p>
+          </div>
+
+          {/* NVIDIA */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">NVIDIA</span>
+              <span className="text-xs rounded bg-emerald-500/20 px-2 py-0.5 text-emerald-300 font-mono">N</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Centers heavily on low-level programming, memory management, graphics architecture, and parallel computing.
+            </p>
+          </div>
+
+          {/* Apple */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Apple</span>
+              <span className="text-xs rounded bg-purple-500/20 px-2 py-0.5 text-purple-300 font-mono">A</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Assesses tight code efficiency, deep system debugging capabilities, and meticulous attention to product quality.
+            </p>
+          </div>
+
+          {/* Meta */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Meta</span>
+              <span className="text-xs rounded bg-blue-600/20 px-2 py-0.5 text-blue-400 font-mono">M</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Requires fast-paced coding execution, dynamic programming mastery, and rapid system scaling analysis.
+            </p>
+          </div>
+
+          {/* Atlassian */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Atlassian</span>
+              <span className="text-xs rounded bg-cyan-600/20 px-2 py-0.5 text-cyan-300 font-mono">A</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Focuses on clean code extensibility, API design practices, and collaborative troubleshooting scenarios.
+            </p>
+          </div>
+
+          {/* Uber */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="text-lg font-bold text-white">Uber</span>
+              <span className="text-xs rounded bg-zinc-700/40 px-2 py-0.5 text-slate-300 font-mono">U</span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-400">
+              Targets complex distributed systems, real-time data streaming architectures, and heavy algorithmic challenges.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Resources Section */}
       <section
         id="resources"
@@ -317,7 +439,7 @@ export default function Home() {
           {/* Amazon Sheet Card */}
           <Link
             href="/resources/dsa/amazon"
-            className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:border-cyan-400/50 hover:bg-white/10"
+            className="group rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur transition hover:bg-white/10"
           >
             <h3 className="text-xl font-semibold text-white group-hover:text-cyan-400 transition">
               Amazon DSA Sheet →

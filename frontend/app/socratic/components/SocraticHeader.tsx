@@ -5,18 +5,33 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Sparkles, LogOut } from "lucide-react";
 
-export default function SocraticHeader() {
+interface SocraticHeaderProps {
+  topic?: string;
+  problemStatement?: string;
+  onEnd?: () => void;
+}
+
+export default function SocraticHeader({ 
+  topic = "Socratic Room", 
+  problemStatement,
+  onEnd 
+}: SocraticHeaderProps) {
   const router = useRouter();
 
   const handleEndSession = () => {
-    router.push("/socratic/analysis");
+    if (onEnd) {
+      onEnd();
+    } else {
+      router.push("/socratic/analysis");
+    }
   };
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/70 backdrop-blur-xl shrink-0 z-20">
       <div className="flex items-center gap-4">
+        {/* Updated back link to point to Socratic Dashboard instead of root */}
         <Link
-          href="/"
+          href="/socratic/dashboard"
           className="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white border border-white/10 transition hover:bg-white/10"
         >
           <ArrowLeft size={18} />
@@ -27,11 +42,13 @@ export default function SocraticHeader() {
           </div>
           <div>
             <h1 className="font-extrabold uppercase tracking-[0.15em] text-sm bg-gradient-to-r from-blue-400 via-sky-400 to-blue-500 bg-clip-text text-transparent">
-              Socratic Room
+              {topic}
             </h1>
-            <p className="text-xs text-slate-400 font-medium">
-              Topic: Two Sum Optimization
-            </p>
+            {problemStatement && (
+              <p className="text-xs text-slate-400 font-medium truncate max-w-md">
+                {problemStatement}
+              </p>
+            )}
           </div>
         </div>
       </div>

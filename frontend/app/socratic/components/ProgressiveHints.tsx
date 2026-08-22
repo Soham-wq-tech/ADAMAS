@@ -9,6 +9,10 @@ interface Hint {
   text: string;
 }
 
+interface ProgressiveHintsProps {
+  sessionId?: string | null;
+}
+
 const HINTS_DATA: Hint[] = [
   {
     id: 1,
@@ -27,7 +31,7 @@ const HINTS_DATA: Hint[] = [
   },
 ];
 
-export default function ProgressiveHints() {
+export default function ProgressiveHints({ sessionId }: ProgressiveHintsProps) {
   const [unlockedCount, setUnlockedCount] = useState<number>(1);
 
   const handleRevealNext = () => {
@@ -42,7 +46,7 @@ export default function ProgressiveHints() {
         <div className="flex items-center gap-2">
           <Sparkles size={16} className="text-amber-400" />
           <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider">
-            Progressive Hints System
+            Progressive Hints System {sessionId ? `(Session Active)` : ""}
           </h3>
         </div>
 

@@ -7,9 +7,10 @@ from extensions import db, jwt, cors
 from routes.auth import auth_bp
 from routes.interview import interview_bp
 from routes.dashboard import dashboard_bp
+from routes.socratic import socratic_bp  # Socratic Room Blueprint
 
 # Import your Gemini chat response helper function
-from services.ai_interviewer import get_ai_response  # Update with your actual module name/path
+from services.ai_interviewer import get_ai_response 
 
 
 def create_app():
@@ -31,6 +32,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(interview_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(socratic_bp)  # Registered Socratic blueprint
 
     # Root & Health Check Endpoints
     @app.route("/", methods=["GET"])
@@ -41,7 +43,7 @@ def create_app():
     def health():
         return jsonify({"status": "ok"}), 200
 
-    # ---- NEW: Interview Chat Loop Handler Route --------------------------
+    # ---- Interview Chat Loop Handler Route --------------------------
     @app.route("/api/interview/response", methods=["POST"])
     def handle_interview_response():
         """
@@ -75,7 +77,7 @@ def create_app():
     def server_error(e):
         return jsonify({"error": "Internal server error."}), 500
 
-    # Create MySQL database tables if they do not exist
+    # Create database tables if they do not exist
     with app.app_context():
         db.create_all()
 
