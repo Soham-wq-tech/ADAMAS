@@ -3,13 +3,16 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { apiFetch } from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/dashboard";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -19,7 +22,7 @@ export default function LoginPage() {
   // Handle Email & Password Sign In
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Client-side Password Validation Check
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
@@ -46,7 +49,7 @@ export default function LoginPage() {
         }
         // Explicitly set isGuest to false for regular users so navbar updates properly
         localStorage.setItem("isGuest", "false");
-        router.push("/dashboard");
+        router.push(redirectPath);
       } else {
         setError("Account not found or invalid credentials. Please sign up to create an account.");
       }
@@ -79,7 +82,7 @@ export default function LoginPage() {
           localStorage.setItem("user", JSON.stringify(data.user));
         }
         localStorage.setItem("isGuest", "true");
-        router.push("/dashboard");
+        router.push(redirectPath);
       } else {
         setError("Failed to sign in as guest.");
       }
@@ -152,7 +155,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-xs text-gray-400 hover:text-white"
+                className="absolute right-3 top-2.5 text-xs text-gray-400 hover:text-white cursor-pointer"
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
@@ -200,5 +203,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-black text-white">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

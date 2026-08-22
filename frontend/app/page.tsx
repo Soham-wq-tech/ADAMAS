@@ -1,6 +1,4 @@
 // app/page.tsx
-// Next.js (App Router) + Tailwind landing page
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AIInterviewBackground from "./components/landing/AIInterviewBackground";
 import ThreeHero from "./components/landing/ThreeHero";
-import Companies from "./components/landing/Companies";
 import Footer from "./components/landing/Footer";
 
 const PRODUCT_NAME = "The Real Room";
@@ -37,33 +34,49 @@ export default function Home() {
     if (token || guestStatus) {
       router.push("/dashboard");
     } else {
-      router.push("/login");
+      router.push("/login?redirect=/dashboard");
+    }
+  };
+
+  const handleEnterSocratic = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const guestStatus = localStorage.getItem("isGuest");
+    if (token || guestStatus) {
+      router.push("/socratic/room");
+    } else {
+      router.push("/login?redirect=/socratic/room");
     }
   };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-slate-100">
       <AIInterviewBackground />
+
       {/* Nav */}
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <Link href="/" className="text-base font-extrabold uppercase tracking-[0.2em] bg-gradient-to-r from-blue-400 via-sky-400 to-blue-500 bg-clip-text text-transparent hover:opacity-80 transition">
+            <Link
+              href="/"
+              className="text-base font-extrabold uppercase tracking-[0.2em] bg-gradient-to-r from-blue-400 via-sky-400 to-blue-500 bg-clip-text text-transparent hover:opacity-80 transition"
+            >
               {PRODUCT_NAME}
             </Link>
           </div>
+
           <div className="hidden items-center gap-8 md:flex">
+            <a
+              href="#modes"
+              className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+            >
+              Modes
+            </a>
             <a
               href="#how-it-works"
               className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
             >
               How It Works
-            </a>
-            <a
-              href="#companies"
-              className="text-sm font-medium text-slate-400 transition hover:text-cyan-400"
-            >
-              Companies
             </a>
             <a
               href="#resources"
@@ -73,12 +86,15 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Dynamic Top Right Section: Defaults cleanly to Sign In until client mounts and verifies storage */}
+          {/* Dynamic Top Right Section */}
           {mounted && isLoggedIn ? (
             <div className="flex items-center gap-3">
-              {/* Status Badge */}
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300">
-                <span className={`h-1.5 w-1.5 rounded-full ${isGuest ? "bg-amber-400" : "bg-emerald-400"}`} />
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${
+                    isGuest ? "bg-amber-400" : "bg-emerald-400"
+                  }`}
+                />
                 {isGuest ? "Guest" : "Authenticated"}
               </span>
 
@@ -100,7 +116,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Ambient glow */}
+      {/* Ambient glows */}
       <div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-40 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-cyan-400/20 blur-[120px]"
@@ -126,12 +142,14 @@ export default function Home() {
         </h1>
 
         <p className="mt-5 max-w-xl text-balance text-base text-slate-400 sm:text-lg">
-          Master your placement interviews with an AI that listens, adapts, and pushes back —
-          giving aspiring students a realistic simulation before stepping into the real room.
+          Master your placement interviews with an AI that listens, adapts, and
+          pushes back — giving aspiring students a realistic simulation before
+          stepping into the real room.
         </p>
 
         {/* CTAs */}
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
+          {/* Button 1: Enter The Room */}
           <button
             onClick={handleEnterRoom}
             className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
@@ -144,14 +162,109 @@ export default function Home() {
               </span>
             </span>
           </button>
+
+          {/* Button 2: Socratic Mode */}
+          <button
+            onClick={handleEnterSocratic}
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 px-10 py-5 text-lg font-bold text-black shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-cyan-500/40 cursor-pointer"
+          >
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+            <span className="relative flex items-center gap-3">
+              Socratic Mode
+              <span className="text-xl transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </span>
+          </button>
         </div>
 
         <ThreeHero />
       </section>
 
-      <HowItWorks />
+      {/* Modes Overview Section */}
+      <section id="modes" className="relative z-10 mx-auto max-w-6xl px-6 py-20">
+        <div className="text-center">
+          <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-1 text-sm text-cyan-300">
+            Dual Learning Engines
+          </span>
+          <h2 className="mt-6 text-4xl font-bold text-white">
+            Choose Your Preparation Pathway
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-400">
+            Whether you want a high-stakes, pressure-tested mock interview or step-by-step guided problem-solving, our platform adapts to your prep style.
+          </p>
+        </div>
 
-      <Companies />
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {/* Real Room Mode Card */}
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                Simulated Assessment
+              </span>
+              <span className="text-2xl">⚡</span>
+            </div>
+            <h3 className="mt-6 text-2xl font-bold text-white">The Real Room</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+              A high-fidelity interview loop designed to mimic tier-1 engineering rounds. The AI interviewer tests your technical depths, questions bad complexity choices, and evaluates communication under pressure.
+            </p>
+            <ul className="mt-6 space-y-2 text-xs text-slate-300">
+              <li className="flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Dynamic company-specific question sets
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Real-time speech & code analysis
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Post-interview performance analytics
+              </li>
+            </ul>
+            <div className="mt-8">
+              <button
+                onClick={handleEnterRoom}
+                className="w-full rounded-xl border border-cyan-500/40 bg-cyan-500/20 py-3 text-sm font-bold text-cyan-300 transition hover:bg-cyan-500/30 cursor-pointer"
+              >
+                Launch Interview Room →
+              </button>
+            </div>
+          </div>
+
+          {/* Socratic Mode Card */}
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition hover:border-cyan-400/50">
+            <div className="flex items-center justify-between">
+              <span className="rounded-xl border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-400 uppercase tracking-wider">
+                Guided Discovery
+              </span>
+              <span className="text-2xl">✦</span>
+            </div>
+            <h3 className="mt-6 text-2xl font-bold text-white">Socratic Studio</h3>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">
+              A dialectic tutor environment that never gives away solutions outright. Instead, it asks targeted probing questions, maps your mental conceptual leaps, and unlocks progressive hints.
+            </p>
+            <ul className="mt-6 space-y-2 text-xs text-slate-300">
+              <li className="flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Interactive concept progression graph
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Multi-tier progressive hint system
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-cyan-400">✓</span> Deep algorithmic reasoning breakdown
+              </li>
+            </ul>
+            <div className="mt-8">
+              <button
+                onClick={handleEnterSocratic}
+                className="w-full rounded-xl border border-blue-500/40 bg-blue-500/20 py-3 text-sm font-bold text-blue-300 transition hover:bg-blue-500/30 cursor-pointer"
+              >
+                Enter Socratic Studio →
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <HowItWorks />
 
       {/* Resources Section */}
       <section
@@ -168,7 +281,9 @@ export default function Home() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-slate-400">
-            Choose a company DSA sheet below to view problem sets and download materials tailored for student success. More company sheets will be added in future updates.
+            Choose a company DSA sheet below to view problem sets and download
+            materials tailored for student success. More company sheets will be
+            added in future updates.
           </p>
         </div>
 
@@ -215,7 +330,9 @@ export default function Home() {
 
         {/* Future Notice Row */}
         <div className="mt-8 rounded-xl border border-dashed border-white/15 bg-white/[0.02] p-6 text-center text-sm text-slate-400">
-          Designed to empower student placement prep and mock interview readiness. DSA sheets for NVIDIA, Apple, Meta, Atlassian, and other companies will be added in future updates.
+          Designed to empower student placement prep and mock interview readiness.
+          DSA sheets for NVIDIA, Apple, Meta, Atlassian, and other companies will be
+          added in future updates.
         </div>
       </section>
 

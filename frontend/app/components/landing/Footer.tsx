@@ -4,7 +4,6 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-black py-12">
       <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 md:flex-row md:justify-between">
-
         <div>
           <h2 className="text-2xl font-bold text-white">
             The <span className="text-cyan-400">Real Room</span>
@@ -21,19 +20,21 @@ export default function Footer() {
           </h3>
 
           <div className="space-y-3 text-slate-400">
-
-            <a href="#companies" className="block hover:text-cyan-400">
-              Companies
+            <a href="#modes" className="block hover:text-cyan-400 transition">
+              Modes
             </a>
 
-            <a href="#how-it-works" className="block hover:text-cyan-400">
+            <a href="#how-it-works" className="block hover:text-cyan-400 transition">
               How It Works
             </a>
 
-            <Link href="/login" className="block hover:text-cyan-400">
+            <a href="#resources" className="block hover:text-cyan-400 transition">
+              Resources
+            </a>
+
+            <Link href="/login" className="block hover:text-cyan-400 transition">
               Login
             </Link>
-
           </div>
         </div>
 
@@ -47,10 +48,9 @@ export default function Footer() {
           </p>
 
           <p className="mt-2 text-slate-500 text-sm">
-            Mock Interview Simulation Platform
+            Mock Interview & Socratic Learning Platform
           </p>
         </div>
-
       </div>
 
       <div className="mt-12 border-t border-white/10 pt-6 text-center text-sm text-slate-500">

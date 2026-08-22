@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles, Terminal } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CTA() {
@@ -19,38 +19,65 @@ export default function CTA() {
         viewport={{ once: true }}
         className="relative z-10 mx-auto max-w-5xl px-6"
       >
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
-
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl md:p-12">
           <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-1 text-sm text-cyan-300">
-            Ready?
+            Select Your Experience
           </span>
 
           <h2 className="mt-6 text-4xl font-bold text-white md:text-5xl">
-            Ready to Enter{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              The Real Room
-            </span>
-            ?
+            Choose How You Want to Practice
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-400">
-            Experience AI-powered interviews that simulate real company
-            environments, evaluate your performance, and prepare you for the
-            interview that truly matters.
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
+            Simulate an uncompromised high-stakes assessment or build deep conceptual mastery with an interactive AI mentor.
           </p>
 
-          <Link
-            href="/login"
-            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-cyan-400 px-8 py-4 font-semibold text-black transition-all duration-300 hover:scale-105 hover:bg-cyan-300"
-          >
-            Enter The Room
+          {/* Dual Action Cards */}
+          <div className="mt-10 grid grid-cols-1 gap-6 text-left md:grid-cols-2">
+            
+            {/* Real Room Card */}
+            <div className="flex flex-col justify-between rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-md transition-all duration-300 hover:border-cyan-500/40">
+              <div>
+                <div className="mb-4 flex items-center gap-3 text-cyan-400">
+                  <Terminal size={22} />
+                  <h3 className="text-xl font-bold text-white">The Real Room</h3>
+                </div>
+                <p className="text-sm text-slate-400">
+                  Real-world technical interview simulation. Evaluates speed, communication, and accuracy under strict time pressure.
+                </p>
+              </div>
 
-            <ArrowRight
-              size={18}
-              className="transition group-hover:translate-x-1"
-            />
-          </Link>
+              <Link
+                href="/interview/room"
+                className="group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-400/10 py-3.5 font-semibold text-cyan-300 transition-all duration-300 hover:bg-cyan-400 hover:text-black"
+              >
+                <span>Enter The Real Room</span>
+                <ArrowRight size={18} className="transition group-hover:translate-x-1" />
+              </Link>
+            </div>
 
+            {/* Socratic Mode Card */}
+            <div className="flex flex-col justify-between rounded-2xl border border-indigo-500/30 bg-indigo-950/20 p-6 backdrop-blur-md transition-all duration-300 hover:border-indigo-500/60">
+              <div>
+                <div className="mb-4 flex items-center gap-3 text-indigo-400">
+                  <Sparkles size={22} />
+                  <h3 className="text-xl font-bold text-white">Socratic Studio</h3>
+                </div>
+                <p className="text-sm text-slate-400">
+                  Interactive dialectic mentorship. Learn through guided probes, progressive nudges, and conceptual reasoning maps.
+                </p>
+              </div>
+
+              <Link
+                href="/socratic/room"
+                className="group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3.5 font-semibold text-white transition-all duration-300 hover:bg-indigo-500 shadow-lg shadow-indigo-600/20"
+              >
+                <span>Enter Socratic Mode</span>
+                <Sparkles size={18} />
+              </Link>
+            </div>
+
+          </div>
         </div>
       </motion.div>
     </section>
